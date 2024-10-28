@@ -373,45 +373,70 @@ burn_iso_to_disk() {
 
 verify_iso_burn() {
     local iso_file="$iso_download_dir$iso_file"
-    local calculated_checksum
-    local expected_checksum
+    local iso_size
+    echo "Verifying ISO was burned successfully..."
 
-    echo "Verifying iso was burned successfully..."
-    echo "Calculating SHA256 checksum of $iso_file"
-    # Get the expected checksum from the ISO file
-    expected_checksum=$(sha256sum "$iso_file" | awk '{print $1}')
+    # Get the size of the ISO file
+    iso_size=$(stat --format="%s" "$iso_file")
 
-    echo "Calculating SHA256 checksum of $target_device"
-    echo "Note: this may take up to 10 minutes depending on the speed of the device."
+    echo "Comparing the ISO with the burned content on $target_device"
+    echo "Note: This process may take some time, depending on the device speed."
     echo "Started at: $(date +"%Y-%m-%d %T")"
-    # Calculate the checksum of the burned device
-    calculated_checksum=$(sudo sha256sum "$target_device" | awk '{print $1}')
 
-    # Compare checksums
-    if [[ "$calculated_checksum" == "$expected_checksum" ]]; then
+    # Use cmp to compare the ISO with the target device, limited to the ISO size
+    sudo cmp --bytes="$iso_size" "$iso_file" "$target_device"
+
+    if [[ $? -eq 0 ]]; then
         echo "Verification successful: ISO was burned correctly."
         echo "You may now restart and boot into the installation medium."
         return 0
     else
-        echo "Verification failed!"
-        echo "Expected:   $expected_checksum"
-        echo "Calculated: $calculated_checksum"
+        echo "Verification failed! The contents differ."
         exit 1
     fi
 }
 
-cleanup_temp() {
-    rm -rf "$iso_download_dir"
+cleanup() {
+    echo "Cleanup process initiated."
+
+    # List of files to delete
+    files_to_remove=(
+        "$iso_download_dir$iso_file"
+        "$iso_download_dir$iso_sig_file"
+        "$iso_download_dir$iso_sha256sums_file"
+        "$iso_download_dir$iso_b2sums_file"
+    )
+
+    # Prompt the user for confirmation
+    read -p "Do you want to remove the ISO and verification files? [y/N]: " response
+
+    if [[ "$response" =~ ^[Yy]$ ]]; then
+        echo "Removing files..."
+
+        # Iterate through each file and delete it if it exists
+        for file in "${files_to_remove[@]}"; do
+            if [[ -f "$file" ]]; then
+                rm "$file"
+                echo "Removed: $file"
+            else
+                echo "File not found: $file"
+            fi
+        done
+    else
+        echo "Skipping file removal."
+    fi
+
+    echo "Cleanup complete."
 }
 
 main() {
-    print_intro
-    create_download_directory
-    download_iso_verification_files
-    download_and_verify_iso
-    select_target_device
+#    print_intro
+#    create_download_directory
+#    download_iso_verification_files
+#    download_and_verify_iso
+#    select_target_device
     verify_iso_burn
-    cleanup_temp
+#    cleanup
 }
 
 main
