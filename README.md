@@ -37,6 +37,7 @@ chmod +x ArchLinuxPreInstall.sh
 ```bash
 Select a device to burn the ISO to:
 /dev/sda - USB_2.0_FD - 16GiB
+/dev/sdb - USB_2.0_FD - 64Gib
 
 1) /dev/sda
 2) /dev/sdb
@@ -137,7 +138,6 @@ Are you sure you want to proceed with burning the iso to /dev/sda?
 Type YES to continue, (N)o to select another device, or (Q)uit: YES
 Target device set to: /dev/sda
 Burning /tmp/archiso/archlinux-x86_64.iso to /dev/sda...
-status=progress oflag=sync
 archlinux-x86_64.iso burned to /dev/sda
 
 Verifying iso was burned successfully...
