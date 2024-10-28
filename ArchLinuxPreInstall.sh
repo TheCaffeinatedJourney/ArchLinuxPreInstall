@@ -405,7 +405,7 @@ cleanup_temp() {
 }
 
 main() {
-    intro
+    print_intro
     create_download_directory
     download_iso_verification_files
     download_and_verify_iso
