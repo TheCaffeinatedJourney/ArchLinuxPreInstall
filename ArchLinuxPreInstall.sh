@@ -341,7 +341,7 @@ select_target_device() {
             echo ""
             echo "WARNING: THIS IS A DESTRUCTIVE COMMAND!"
             echo "Are you sure you want to proceed with burning the iso to $device?"
-            read -rp "Type YES to continue, (N)o to select another device, or (Q)uit: " confirm
+            read -rp "Type YES in capital letters to continue, (N)o to select another device, or (Q)uit: " confirm
             if [[ "$confirm" == "YES" ]]; then
                 target_device="$device"
                 echo "Target device set to: $target_device"
@@ -350,6 +350,8 @@ select_target_device() {
             elif [[ "${confirm^^}" == "N" || "${confirm^^}" == "NO" ]]; then
                 echo "Selection cancelled. Please choose another device."
             elif [[ "${confirm^^}" == "Q" || "${confirm^^}" == "QUIT" ]]; then
+                echo "The dd command to manually burn the ISO to $target_device is:"
+                echo "dd if=\"$iso_download_dir$iso_file\" of=\"$target_device\" bs=4M status=progress oflag=sync"
                 exit 1
             else
                 echo "Invalid response. Please try again."
@@ -365,7 +367,6 @@ burn_iso_to_disk() {
     local output_file="$target_device"
 
     echo "Burning $input_file to $output_file..."
-    #echo "dd command: sudo dd if=\"$input_file\" of=\"$output_file\" bs=4M status=progress oflag=sync"
     sudo dd if="$input_file" of="$output_file" bs=4M status=progress oflag=sync
     echo "$iso_file burned to $output_file"
     echo ""
@@ -381,23 +382,24 @@ verify_iso_burn() {
 
     echo "Comparing the ISO with the burned content on $target_device"
     echo "Note: This process may take some time, depending on the device speed."
-    echo "Started at: $(date +"%Y-%m-%d %T")"
 
     # Use cmp to compare the ISO with the target device, limited to the ISO size
     sudo cmp --bytes="$iso_size" "$iso_file" "$target_device"
 
     if [[ $? -eq 0 ]]; then
-        echo "Verification successful: ISO was burned correctly."
+        echo "Verification successful: ISO was burned successfully!"
         echo "You may now restart and boot into the installation medium."
         return 0
     else
-        echo "Verification failed! The contents differ."
+        echo "Verification failed! The ISO may not have been burned successfully."
+        echo "Please verify manually or try again."
+        echo "The dd command to burn the ISO to $target_device is:"
+        echo "dd if=\"$iso_download_dir$iso_file\" of=\"$target_device\" bs=4M status=progress oflag=sync"
         exit 1
     fi
 }
 
 cleanup() {
-    echo "Cleanup process initiated."
 
     # List of files to delete
     files_to_remove=(
@@ -407,13 +409,10 @@ cleanup() {
         "$iso_download_dir$iso_b2sums_file"
     )
 
-    # Prompt the user for confirmation
-    read -p "Do you want to remove the ISO and verification files? [y/N]: " response
+    echo ""
+    read -p "Do you want to remove the ISO and verification files? [y/n]: " response
 
     if [[ "$response" =~ ^[Yy]$ ]]; then
-        echo "Removing files..."
-
-        # Iterate through each file and delete it if it exists
         for file in "${files_to_remove[@]}"; do
             if [[ -f "$file" ]]; then
                 rm "$file"
@@ -423,20 +422,20 @@ cleanup() {
             fi
         done
     else
-        echo "Skipping file removal."
+        return
     fi
 
     echo "Cleanup complete."
 }
 
 main() {
-#    print_intro
-#    create_download_directory
-#    download_iso_verification_files
-#    download_and_verify_iso
-#    select_target_device
+    print_intro
+    create_download_directory
+    download_iso_verification_files
+    download_and_verify_iso
+    select_target_device
     verify_iso_burn
-#    cleanup
+    cleanup
 }
 
 main
