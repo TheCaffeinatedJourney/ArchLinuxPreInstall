@@ -62,7 +62,6 @@ country_code="US"
 ---
 
 ## Example Run
-This example shows the output of the script.  
 In this example, you'll see the following:
 * Creating the download directory
 * Downloading the archlinux-x86_64.iso.sig file, sha256sums.txt, and b2sums.txt
@@ -74,31 +73,54 @@ In this example, you'll see the following:
 * Verifying the ISO was burned correctly, which failed.
 
 ```bash
-Creating temporary directory at /tmp/archiso/...
+============================================================================
+               _             _       _     _
+              / \   _ __ ___| |__   | |   (_)_ __  _   ___  __
+             / _ \ | '__/ __| '_ \  | |   | | '_ \| | | \ \/ /
+            / ___ \| | | (__| | | | | |___| | | | | |_| |>  <
+           /_/   \_\_|  \___|_| |_| |_____|_|_| |_|\__,_/_/\_\
+        _             ____                      _                 _
+       (_)___  ___   |  _ \  _____      ___ __ | | ___   __ _  __| |
+       | / __|/ _ \  | | | |/ _ \ \ /\ / / '_ \| |/ _ \ / _  |/ _  |
+       | \__ \ (_) | | |_| | (_) \ V  V /| | | | | (_) | (_| | (_| |
+       |_|___/\___/  |____/ \___/ \_/\_/ |_| |_|_|\___/ \__,_|\__,_|
+                  _  __     __        _  __ _           _   _
+   __ _ _ __   __| | \ \   / /__ _ __(_)/ _(_) ___ __ _| |_(_) ___  _ __
+  / _  | '_ \ / _  |  \ \ / / _ \ '__| | |_| |/ __/ _  | __| |/ _ \| '_ \
+ | (_| | | | | (_| |   \ V /  __/ |  | |  _| | (_| (_| | |_| | (_) | | | |
+  \__,_|_| |_|\__,_|    \_/ \___|_|  |_|_| |_|\___\__,_|\__|_|\___/|_| |_|
+
+============================================================================
+
+ This script will download and verify the latest Arch Linux iso and burn it
+ to an unmounted drive for installation.
+
+============================================================================
+
 
 Downloading iso verification files...
 Downloading archlinux-x86_64.iso.sig
   from https://archlinux.org/iso/latest/archlinux-x86_64.iso.sig
   to /tmp/archiso/archlinux-x86_64.iso.sig...
-####################################################################################### 100.0%
+################################################################################################## 100.0%
 Download successful!
 
 Downloading sha256sums.txt
   from https://archlinux.org/iso/latest/sha256sums.txt
   to /tmp/archiso/sha256sums.txt...
-####################################################################################### 100.0%
+################################################################################################## 100.0%
 Download successful!
 
 Downloading b2sums.txt
   from https://archlinux.org/iso/latest/b2sums.txt
   to /tmp/archiso/b2sums.txt...
-####################################################################################### 100.0%
+################################################################################################## 100.0%
 Download successful!
 
 Downloading iso archlinux-x86_64.iso
   from https://mirror.lty.me/archlinux/iso/latest/archlinux-x86_64.iso
   to /tmp/archiso/archlinux-x86_64.iso
-####################################################################################### 100.0%
+################################################################################################## 100.0%
 Verifying SHA256 checksum...
 Error: SHA256 checksum verification failed.
 Expected:   b72dd6ffef7507f8b7cddd7c69966841650ba0f82c29a318cb2d182eb3fcb1db
@@ -109,7 +131,7 @@ ISO from https://mirror.lty.me/archlinux/ failed verification! Trying another mi
 Downloading iso archlinux-x86_64.iso
   from https://mirror.pilotfiber.com/archlinux/iso/latest/archlinux-x86_64.iso
   to /tmp/archiso/archlinux-x86_64.iso
-####################################################################################### 100.0%
+################################################################################################## 100.0%
 Verifying SHA256 checksum...
 SHA256 checksum verification passed.
 
@@ -135,19 +157,30 @@ You selected: /dev/sda
 
 WARNING: THIS IS A DESTRUCTIVE COMMAND!
 Are you sure you want to proceed with burning the iso to /dev/sda?
-Type YES to continue, (N)o to select another device, or (Q)uit: YES
+Type YES in capital letters to continue, (N)o to select another device, or (Q)uit: YES
 Target device set to: /dev/sda
 Burning /tmp/archiso/archlinux-x86_64.iso to /dev/sda...
+[sudo] password for user:
+1173389312 bytes (1.2 GB, 1.1 GiB) copied, 149 s, 7.9 MB/s
+279+1 records in
+279+1 records out
+1173389312 bytes (1.2 GB, 1.1 GiB) copied, 149.164 s, 7.9 MB/s
 archlinux-x86_64.iso burned to /dev/sda
 
-Verifying iso was burned successfully...
-Calculating SHA256 checksum of /tmp/archiso/archlinux-x86_64.iso
-Calculating SHA256 checksum of /dev/sda
-Note: this may take up to 10 minutes depending on the speed of the device.
-Started at: 2024-10-27 23:34:53
-Verification failed!
-Expected:   b72dd6ffef7507f8b7cddd7c69966841650ba0f82c29a318cb2d182eb3fcb1db
-Calculated: 33611103701e4e2c856f2c68abc7103c8816287eaf3d76a73d53003295372678
+Verifying ISO was burned successfully...
+Comparing the ISO with the burned content on /dev/sda
+Note: This process may take some time, depending on the device speed.
+
+Verification successful: ISO was burned successfully!
+You may now restart and boot into the installation medium.
+
+Do you want to remove the ISO and verification files? [y/N]: y
+Removing files...
+Removed: /tmp/archiso/archlinux-x86_64.iso
+Removed: /tmp/archiso/archlinux-x86_64.iso.sig
+Removed: /tmp/archiso/sha256sums.txt
+Removed: /tmp/archiso/b2sums.txt
+Cleanup complete.
 ```
 ---
 
