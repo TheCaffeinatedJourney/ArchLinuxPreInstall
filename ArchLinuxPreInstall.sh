@@ -10,7 +10,6 @@ iso_sig_file="archlinux-x86_64.iso.sig"
 iso_sha256sums_file="sha256sums.txt"
 iso_b2sums_file="b2sums.txt"
 iso_download_dir="/tmp/archiso/"
-country_code="US"
 burn_to_disk="false"
 
 print_intro() {
@@ -44,7 +43,6 @@ print_intro() {
 }
 
 
-
 prompt_for_burn_to_disk() {
     while true; do
         echo -e "Do you want to:\n    1) Download and Verify the Arch Linux ISO?\n    2) Download, Verify, and Burn the Arch Linux ISO to a disk?"
@@ -54,9 +52,13 @@ prompt_for_burn_to_disk() {
         choice=${choice:-1} # Default to option 1 if no input is provided
 
         if [[ "$choice" == "1" ]]; then
+            echo "Download and Verify the Arch ISO."
+            echo ""
             burn_to_disk="false"
             break
         elif [[ "$choice" == "2" ]]; then
+            echo "Download, Verify, and Burn the Arch ISO to a disk."
+            echo ""
             burn_to_disk="true"
             break
         else
@@ -100,14 +102,13 @@ get_mirror_status_json() {
 
 get_top_mirrors_from_json() {
     local json="$1"
-    echo "$json" | jq -r --arg country_code "$country_code" '
+    echo "$json" | jq -r '
         .urls
-        | map(select(.country_code == $country_code and .active == true and .protocol == "https" and .score != null))
-        | sort_by(-.score)  # Sort by score in descending order
-        | .[:10]             # Limit to top 10 mirrors
-        | .[] | .url'        # Return valid mirrors
+        | map(select(.active == true and .protocol == "https" and .score != null and .delay < 60))
+        | sort_by(.score)  # Sort by score in ascending order
+        | .[:10]            # Limit to top 10 mirrors
+        | .[] | .url'       # Return valid mirrors
 }
-
 
 create_download_directory() {
     if [[ ! -d "$iso_download_dir" ]]; then

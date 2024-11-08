@@ -64,9 +64,6 @@ Inside `ArchLinuxPreInstall.sh`, you can modify the following variables to custo
 ```bash
 # Path to download the ISO and verification files
 iso_download_dir="/tmp/archiso/"
-
-# Country Code of the Mirrors you want to download from
-country_code="US"
 ```
 ---
 
