@@ -32,7 +32,16 @@ chmod +x ArchLinuxPreInstall.sh
 ./ArchLinuxPreInstall.sh
 ```
 
-### 2. Specify a Target Device
+### 2. Select whether to Download and Verify the ISO, or also burn to a disk
+   When prompted, select whether to Download and Verify the ISO, or also burn to a disk.
+```bash
+Do you want to:
+    1) Download and Verify the Arch Linux ISO?
+    2) Download, Verify, and Burn the Arch Linux ISO to a disk?
+Enter your choice:
+```
+
+### 3. Specify a Target Device
    When prompted, select the device you want to burn the ISO to.
 ```bash
 Select a device to burn the ISO to:
@@ -63,6 +72,7 @@ country_code="US"
 
 ## Example Run
 In this example, you'll see the following:
+* Selecting option to Download, Verify, and Burn to Disk
 * Creating the download directory
 * Downloading the archlinux-x86_64.iso.sig file, sha256sums.txt, and b2sums.txt
 * Finding the highest ranked mirror and downloading the ISO
@@ -97,6 +107,11 @@ In this example, you'll see the following:
 
 ============================================================================
 
+Do you want to:
+    1) Download and Verify the Arch Linux ISO?
+    2) Download, Verify, and Burn the Arch Linux ISO to a disk?
+Enter your choice: 2
+Download, Verify, and Burn the Arch ISO to a disk.
 
 Downloading iso verification files...
 Downloading archlinux-x86_64.iso.sig

@@ -11,6 +11,7 @@ iso_sha256sums_file="sha256sums.txt"
 iso_b2sums_file="b2sums.txt"
 iso_download_dir="/tmp/archiso/"
 country_code="US"
+burn_to_disk="false"
 
 print_intro() {
     clear
@@ -41,6 +42,29 @@ print_intro() {
     echo ""
     sleep 2
 }
+
+
+
+prompt_for_burn_to_disk() {
+    while true; do
+        echo -e "Do you want to:\n    1) Download and Verify the Arch Linux ISO?\n    2) Download, Verify, and Burn the Arch Linux ISO to a disk?"
+
+        # Prompt for user input
+        read -p "Enter your choice: " choice
+        choice=${choice:-1} # Default to option 1 if no input is provided
+
+        if [[ "$choice" == "1" ]]; then
+            burn_to_disk="false"
+            break
+        elif [[ "$choice" == "2" ]]; then
+            burn_to_disk="true"
+            break
+        else
+            echo "Invalid choice. Please enter 1 or 2."
+        fi
+    done
+}
+
 
 download_and_verify_iso() {
     local json
@@ -430,12 +454,17 @@ cleanup() {
 
 main() {
     print_intro
+    prompt_for_burn_to_disk
+
     create_download_directory
     download_iso_verification_files
     download_and_verify_iso
-    select_target_device
-    verify_iso_burn
-    cleanup
+
+    if [[ "$burn_to_disk" == "true" ]]; then
+        select_target_device
+        verify_iso_burn
+        cleanup
+    fi
 }
 
 main
