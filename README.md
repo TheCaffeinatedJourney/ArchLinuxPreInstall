@@ -14,7 +14,7 @@ This project provides a Bash script to automate the process of downloading, veri
 
 1. **Clone the Repository**:
 ```bash
-git clone --depth=1 https://github.com/your-username/ArchLinuxPreInstall.git
+git clone --depth=1 https://github.com/TheCaffeinatedJourney/ArchLinuxPreInstall.git
 cd ArchLinuxPreInstall
 ```
 
